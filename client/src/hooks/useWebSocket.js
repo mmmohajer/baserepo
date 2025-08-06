@@ -22,10 +22,16 @@ const useWebSocket = ({
   const send = (data) => {
     const socket = socketRef.current;
     if (socket && socket.readyState === WebSocket.OPEN) {
-      if (typeof data === "object") {
-        socket.send(JSON.stringify(data));
+      if (
+        data instanceof ArrayBuffer ||
+        ArrayBuffer.isView(data) ||
+        data instanceof Blob
+      ) {
+        socket.send(data); // send binary data directly
+      } else if (typeof data === "object") {
+        socket.send(JSON.stringify(data)); // send JSON for objects
       } else {
-        socket.send(data);
+        socket.send(data); // send string
       }
     }
   };
