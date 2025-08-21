@@ -42,6 +42,7 @@ services:
       - ./secrets/api/.env
     volumes:
       - ./volume_data/django_static:/usr/src/app/vol
+      - ./secrets/secret_files/cred.json:/run/secrets/cred.json:ro
     command: ./docker-entrypoint-prod.sh
     depends_on:
       - db
@@ -57,6 +58,7 @@ services:
       - ./secrets/api/.env
     volumes:
       - ./volume_data/django_static:/usr/src/app/vol
+      - ./secrets/secret_files/cred.json:/run/secrets/cred.json:ro
     command: celery -A config worker -l info
     depends_on:
       - db
@@ -72,6 +74,7 @@ services:
       - ./secrets/api/.env
     volumes:
       - ./volume_data/django_static:/usr/src/app/vol
+      - ./secrets/secret_files/cred.json:/run/secrets/cred.json:ro
     command: celery -A config beat -l info
     depends_on:
       - db
@@ -88,6 +91,7 @@ services:
       - ./secrets/api/.env
     volumes:
       - ./volume_data/django_static:/usr/src/app/vol
+      - ./secrets/secret_files/cred.json:/run/secrets/cred.json:ro
     command: celery -A config flower --url_prefix=/flower --basic_auth=${CELERY_FLOWER_USER}:${CELERY_FLOWER_PASSWORD}
     depends_on:
       - db
@@ -104,6 +108,7 @@ services:
       - ./secrets/api/.env
     volumes:
       - ./volume_data/django_static:/usr/src/app/vol
+      - ./secrets/secret_files/cred.json:/run/secrets/cred.json:ro
     command: daphne -b 0.0.0.0 -p 8001 config.asgi:application
     depends_on:
       - db
@@ -122,7 +127,7 @@ services:
 
   db:
     restart: always
-    image: postgres:13-alpine
+    image: ankane/pgvector:v0.5.1
     env_file:
       - ./secrets/db/.env
     ports:

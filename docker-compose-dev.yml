@@ -10,6 +10,7 @@ services:
       - ./api/vol:/vol/static
       - ./volume_data/to_be_served:/to_be_served
       - ./nginx/.htpasswd:/etc/nginx/.htpasswd
+      - ./volume_data/websocket_tmp:/websocket_tmp
     depends_on:
       - client
       - api
@@ -41,6 +42,8 @@ services:
       - "8000:8000"
     volumes:
       - ./api:/usr/src/app
+      - ./volume_data/websocket_tmp:/websocket_tmp
+      - ./secrets/secret_files/cred.json:/run/secrets/cred.json:ro
     command: ./docker-entrypoint-dev.sh
     depends_on:
       - db
@@ -56,6 +59,8 @@ services:
       - ./secrets/api/.env
     volumes:
       - ./api:/usr/src/app
+      - ./volume_data/websocket_tmp:/websocket_tmp
+      - ./secrets/secret_files/cred.json:/run/secrets/cred.json:ro
     command: celery -A config worker -l info
     depends_on:
       - db
@@ -71,6 +76,8 @@ services:
       - ./secrets/api/.env
     volumes:
       - ./api:/usr/src/app
+      - ./volume_data/websocket_tmp:/websocket_tmp
+      - ./secrets/secret_files/cred.json:/run/secrets/cred.json:ro
     command: celery -A config beat -l info
     depends_on:
       - db
@@ -87,6 +94,8 @@ services:
       - ./secrets/api/.env
     volumes:
       - ./api:/usr/src/app
+      - ./volume_data/websocket_tmp:/websocket_tmp
+      - ./secrets/secret_files/cred.json:/run/secrets/cred.json:ro
     command: celery -A config flower --url_prefix=/flower
     depends_on:
       - db
@@ -102,6 +111,8 @@ services:
       - ./secrets/api/.env
     volumes:
       - ./api:/usr/src/app
+      - ./volume_data/websocket_tmp:/websocket_tmp
+      - ./secrets/secret_files/cred.json:/run/secrets/cred.json:ro
     # command: daphne -b 0.0.0.0 -p 8001 config.asgi:application
     command: ./run-daphne-dev.sh
     depends_on:
@@ -121,7 +132,7 @@ services:
 
   db:
     restart: always
-    image: postgres:13-alpine
+    image: ankane/pgvector:v0.5.1
     env_file:
       - ./secrets/db/.env
     ports:

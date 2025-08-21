@@ -6,11 +6,13 @@ DJANGO_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'rest_framework_simplejwt.token_blacklist',
+    'pgvector.django'
 ]
 
 LOCAL_APPS = [
     "core",
-    "websocket"
+    "websocket",
+    "ai"
 ]
 
 INSTALLED_APPS = DJANGO_APPS + LOCAL_APPS
