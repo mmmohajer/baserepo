@@ -8,5 +8,5 @@ def buildgrouplist(ctx):
     build_group_list()
 
 @task
-def testopenai(ctx):
+def testopenaimanager(ctx):
     test_openai_manager()

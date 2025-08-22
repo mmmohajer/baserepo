@@ -172,7 +172,21 @@ class OpenAIManager:
                     else:
                         self.messages = [{"role": "system", "content": summarized}] + self.messages[-max_history:]
 
-    def build_chunks(self, text, max_chunk_size=1000):
+    def build_simple_text_from_html(self, html_src):
+        """
+        Convert HTML content to plain text.
+        
+        Args:
+            html (str): The HTML content to convert.
+        
+        Returns:
+            str: The plain text representation.
+        """
+        chunk_pipeline = ChunkPipeline()
+        text = chunk_pipeline.process(html_src, "get_text")
+        return text
+
+    def build_chunks(self, text, max_chunk_size=1000, chunk_mode="html_aware"):
         """
         Chunk text into manageable pieces for processing.
         
@@ -186,15 +200,15 @@ class OpenAIManager:
         Example:
             chunks = manager.build_chunks(long_text, max_chunk_size=500)
         """
-        chunk_pipeline = ChunkPipeline()
-        chunks = chunk_pipeline.process(text, max_chunk_size)
+        chunk_pipeline = ChunkPipeline(max_text_chars=max_chunk_size, backtrack=300)
+        chunks = chunk_pipeline.process(text, "get_chunks", chunk_mode)
         for i in range(len(chunks) - 1):
-            head, tail = chunk_pipeline.chunker.get_incomplete_end(chunks[i]["html"])
+            head, tail = chunk_pipeline.chunker.get_incomplete_end_html_aware(chunks[i]["html"])
             if tail:
                 chunks[i]["html"] = head
-                chunks[i]["text"] = head
+                chunks[i]["text"] = self.build_simple_text_from_html(head)
                 chunks[i + 1]["html"] = tail + chunks[i + 1]["html"]
-                chunks[i + 1]["text"] = tail + chunks[i + 1]["text"]
+                chunks[i + 1]["text"] = self.build_simple_text_from_html(tail + chunks[i + 1]["text"])
         return chunks
 
     def generate_response(self, max_token=2000, messages=None):

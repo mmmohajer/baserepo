@@ -17,6 +17,8 @@ import DisplayRowColumn from "./subs/DisplayRowColumn";
 import DisplayForm from "./subs/DisplayForm";
 import DisplayTable from "./subs/DisplayTable";
 import TestSocket from "./subs/TestSocket";
+import DisplayVoiceRecorder from "./subs/DisplayVoiceRecorder";
+import DisplayPagination from "./subs/DisplayPagination";
 
 import { DESIGN_ITEMS } from "./constants";
 
@@ -83,6 +85,8 @@ const DevDesign = () => {
               {chosenItem === "form" ? <DisplayForm /> : ""}
               {chosenItem === "table" ? <DisplayTable /> : ""}
               {chosenItem === "test-socket" ? <TestSocket /> : ""}
+              {chosenItem === "voice-recorder" ? <DisplayVoiceRecorder /> : ""}
+              {chosenItem === "pagination" ? <DisplayPagination /> : ""}
             </Div>
           </Div>
         )}

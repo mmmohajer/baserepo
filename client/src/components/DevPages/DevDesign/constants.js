@@ -11,4 +11,6 @@ export const DESIGN_ITEMS = [
   { identifier: "form", title: "Form" },
   { identifier: "table", title: "Table" },
   { identifier: "test-socket", title: "Test Socket" },
+  { identifier: "voice-recorder", title: "Voice Recorder" },
+  { identifier: "pagination", title: "Pagination" },
 ];
