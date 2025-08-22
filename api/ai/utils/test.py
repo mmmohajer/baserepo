@@ -1,3 +1,4 @@
+from pydoc import text
 from django.conf import settings
 import json
 import os
@@ -41,5 +42,31 @@ def test_chunking():
             file.write(simple_text)
     print(f"Successfully Done")
 
+def test_ai_tts():
+    manager = OpenAIManager(model="gpt-4o", api_key=settings.OPEN_AI_SECRET_KEY)
+    # Simulate SSML tags for OpenAI TTS
+    my_var = "HEY GUYS!!!!!!"
+    text = f"""
+        "{my_var} ... "
+        "I am SO EXCITED to speak with you today. "
+        "    This is a demonstration (with a higher pitch) of OpenAI's text-to-speech capabilities. "
+        "Can you hear the happiness in my voice? "
+        "Let's make this a WONDERFUL EXPERIENCE together!"
+    """
+    audio_bytes = manager.tts(text=text, voice="nova", audio_format="mp3")
+    audio_file_path = os.path.join(settings.MEDIA_ROOT, 'audio.mp3')
+    with open(audio_file_path, 'wb') as file:
+        file.write(audio_bytes)
+    print(manager.get_cost())
+    print(f"Successfully Done")
+
+def test_ai_stt():
+    manager = OpenAIManager(model="gpt-4o", api_key=settings.OPEN_AI_SECRET_KEY)
+    audio_file_path = os.path.join(settings.MEDIA_ROOT, 'audio.mp3')
+    with open(audio_file_path, 'rb') as file:
+        audio_bytes = file.read()
+    text = manager.stt(audio_input=audio_bytes, input_type="bytes")
+    print(f"Transcribed Text: {text}")
+
 def test_openai_manager():
-    test_chunking()
+    test_ai_stt()

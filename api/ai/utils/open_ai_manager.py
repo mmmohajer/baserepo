@@ -352,7 +352,7 @@ class OpenAIManager:
         cost = duration_minutes * input_price
         self.cost += cost
         if response_format == "text":
-            return response.text
+            return response
         elif response_format == "json":
             return response.json["text"]
         elif response_format == "srt":
@@ -362,7 +362,7 @@ class OpenAIManager:
         else:
             return response
 
-    def tts(self, text, voice="en-US-Wavenet-D", audio_format="mp3", model="tts-1"):
+    def tts(self, text, voice="nova", audio_format="mp3", model="tts-1"):
         """
         Convert text to speech using OpenAI TTS.
         
